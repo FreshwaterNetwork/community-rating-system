@@ -1,0 +1,11 @@
+{
+    "css": [
+		"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css",
+		"plugins/community-rating-system/css/main.css"
+    ],
+    "use": {
+        "underscore": { "attach": "_" },
+        "tv4": { "attach": "tv4" },
+        "extjs": { "attach": "Ext" }
+    }
+}

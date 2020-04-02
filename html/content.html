@@ -1,0 +1,29 @@
+﻿<!--This HTML is used in the render function to build the elements within the plugin. The render function first creates a
+Dijit ContentPane to hold all the elements. The ContentPane is assigned a dynamic id upon creation. The render function
+takes the ContentPane id and prepends it to every element with a declared id in this HTML before the elements are created.
+The unique ContentPane id makes all the element ids unique and prevents duplicate id errors across other apps.-->
+
+<div id="getHelpBtnWrap" class="getHelpBtnWrap hide">
+	<button id="getHelpBtn" class="button button-default">Start Using Sample App</button>
+</div>
+<div id="umr-wrap" class="flex1 umr-wrap" style="padding:0.5em 0.5em 30px 0.5em; color: #5d6165;">
+	<section class="umr-first-section">
+		<p id="introP"></p>
+		<h3>Identify Floodplain Units</h3>
+		<div id="top-controls"></div>
+	</section>
+	<section id="mng-act-wrap" class="mng-act-wrap">
+		<div style="position:relative;">
+			<h3>Filter Floodplain Units</h3>
+			<div style="position:absolute; right:108px; top:-7px;">
+				<button id="saveAndShare" class="button button-default" style="height:31px; padding:6px 8px; display:none; background-color:rgb(215, 246, 191);">Save and Share</button>
+			</div>
+			<div style="position:absolute; right:5px; top:-7px;">
+				<button id="resetFilters" class="button button-default" style="height:31px; padding:6px 8px; display:none;">Reset Filters</button>
+			</div>	
+		</div>
+	</section>
+	<section id="supporting-layers" style="display:none;">
+		<h3>Supporting Layers</h3>
+	</section>
+</div>
