@@ -184,6 +184,13 @@ function ( declare, Query, QueryTask ) {
 				})
 				// export parcel table 
 				$(`#${t.id}exportTable`).click(function(){
+					// send selected state to google analytics
+					ga('send', {
+						hitType: 'event',
+						eventCategory: 'Community Rating System',
+						eventAction: 'Parcel Table Download',
+						eventLabel: t.items.length + ' parcels attributes downloaded for ' + t.communityName
+					});
 					t.items.unshift(t.headers)
 					var jsonObject = JSON.stringify(t.items);
 					var csv = t.clicks.convertToCSV(jsonObject);
