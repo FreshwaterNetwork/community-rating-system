@@ -6,24 +6,102 @@ The unique ContentPane id makes all the element ids unique and prevents duplicat
 <div id="getHelpBtnWrap" class="getHelpBtnWrap hide">
 	<button id="getHelpBtn" class="button button-default">Start Using Sample App</button>
 </div>
-<div id="umr-wrap" class="flex1 umr-wrap" style="padding:0.5em 0.5em 30px 0.5em; color: #5d6165;">
-	<section class="umr-first-section">
-		<p id="introP"></p>
-		<h3>Identify Floodplain Units</h3>
-		<div id="top-controls"></div>
-	</section>
-	<section id="mng-act-wrap" class="mng-act-wrap">
-		<div style="position:relative;">
-			<h3>Filter Floodplain Units</h3>
-			<div style="position:absolute; right:108px; top:-7px;">
-				<button id="saveAndShare" class="button button-default" style="height:31px; padding:6px 8px; display:none; background-color:rgb(215, 246, 191);">Save and Share</button>
-			</div>
-			<div style="position:absolute; right:5px; top:-7px;">
-				<button id="resetFilters" class="button button-default" style="height:31px; padding:6px 8px; display:none;">Reset Filters</button>
-			</div>	
+<div id="crs-intro" class="crs-intro">
+	<div style="margin:-11px 0 -14px -11px;">
+		<img width="361" src="plugins/community-rating-system/images/crsPic.jpg">
+	</div>
+	<div style="padding: 0.75em;">
+		<div>
+			The Community Rating System Explorer helps planners prioritize open areas in the floodplain that, if protected in the future, would improve their CRS score, reduce flood insurance costs, and make their communities more resilient to future flooding.
+		</div>	
+		<h4>Choose your state</h4>
+		<div class="chosen-wrap">
+			<select data-placeholder="Select a State" id="crs_state_chosen" class="chosen">
+				<option></option>
+			</select>
 		</div>
+		<div class="choose_community_wrap" id="choose_community_wrap">
+			<h4 id="choose-com-header" class="choose-com-disabled">Choose your community</h4>
+			<div class="chosen-wrap">
+				<select data-placeholder="Select a Community" id="crs_community_chosen" class="chosen" disabled>
+					<option></option>
+				</select>
+			</div>
+		</div>	
+	</div>
+	<div id="comNotListed" class="comNotListed">Why isn't my community listed?</div>	
+</div>	
+<div id="crs-wrap" class="crs-wrap hide" style="padding:0.5em 0.5em 30px 0.5em;">	
+	<section>
+	<div id="backArrow" class="backArrow icons" title="Back"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i></div>
+	<div id="infoIcon" class="infoIcon icons"><i class="fa fa-info-circle" aria-hidden="true"></i></div>
+	<div class=crs-head-1><span id="-STATE" class="communityStats"></span>, <span id="-CRS_NAME" class="communityStats"></span></div>
+	<div class="crs-head-2">+<span id="-fcOSP" class="futureStats"></span> Credits</div>
+	<div class="crs-head-3"><span id="-faOSP" class="futureStats"></span> acres</div>
+	<div class="crs-head-4">of future potentially eligible open space if legally protected from development</div>
 	</section>
-	<section id="supporting-layers" style="display:none;">
-		<h3>Supporting Layers</h3>
+	<section>
+	<div style="text-align: center; margin-top: 10px;">Open Space Preservation – Activity 420 Status</div>
+	<div style="margin-left:28px;">
+		<div class="bar-labels">
+			<div>0</div>
+			<div>700</div>
+			<div>1,400</div>
+			<div>2,100</div>
+			<div>2,870</div>
+		</div>	
+		<div class="bar-ticks">
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+		</div>
+		<div class="graphic">
+			<div class="row">
+	    		<div class="chart">
+	        		<span class="block" title="Current/Proposed">
+	           			<span class="value"></span>
+	        		</span>
+	        		<span class="block" title="Future">
+	           			<span class="value"></span>
+	        		</span>
+	      		</div>
+	    	</div>   
+	  	</div>
+	  	<div class="bar-legend">
+	  		<div></div>
+	  		<div>Current Credits: <span id="legend-current"></span></div>
+	  		<div></div>
+	  		<div>Future Credits: <span id="legend-future"></span></div>
+	  	</div>
+	</div>
+	</section>
+	<section>
+	<div class="sliderInstr">Show potential future OSP points between:</div>
+	<div class="slider-wrap">
+		<div class="slider-nums slider-nums-left"><span id="fsl-min"></span></div>
+		<div class="slider-container range-slider" style="width:170px; margin: 4px 5px 0 10px !important;">
+			<div id="future-slider" class="slider"></div>
+		</div>
+		<div class="slider-nums slider-nums-right"><span id="fsl-max"></span></div>
+	</div>	
+	<div id="taxval-wrap" class="taxval-wrap">	
+		<div style="text-align: center; font-style: italic; color: #457545;">AND</div>	
+		<div class="sliderInstr" style="padding-top:2px;">Show tax parcel values between:</div>
+		<div class="slider-wrap">
+			<div class="slider-nums slider-nums-left"><span id="tsl-min"></span></div>
+			<div class="slider-container range-slider" style="width:170px; margin: 4px 5px 0 10px !important;">
+				<div id="taxval-slider" class="slider"></div>
+			</div>
+			<div class="slider-nums slider-nums-right"><span id="tsl-max"></span></div>
+		</div>	
+	</div>
+	<div class="exportTable-wrap">
+		<button id="exportTable" class="button button-default">Export Resulting Parcel Table</button>
+	</div>	
+	</section>
+	<section>
+		<h4 style="font-weight: bold;">Reference Layers</h4>
+		<div id="ref-cb-wrap"></div>
 	</section>
 </div>

@@ -10,8 +10,8 @@ define([
 function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, content, popup, esriapi, clicks, variables, lang ) {
 	return declare(PluginBase, {
 		// The height and width are set here when an infographic is defined. When the user click Continue it rebuilds the app window with whatever you put in.
-		toolbarName: "UMR Floodplain Explorer", showServiceLayersInLegend: false, allowIdentifyWhenActive: false, rendered: false, resizable: false,
-		hasCustomPrint: false, size:'custom', width:430, 
+		toolbarName: "Coomunity Rating System Explorer", showServiceLayersInLegend: true, allowIdentifyWhenActive: false, rendered: false, resizable: false,
+		hasCustomPrint: false, size:'small', 
 		
 		// First function called when the user clicks the pluging icon. 
 		initialize: function (frameworkParameters) {
@@ -51,43 +51,6 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 		getState: function () {
 			// remove this conditional statement when minimize is added
 			if ( $('#' + this.id ).is(":visible") ){
-				// Get slider ids and values when values do not equal min or max
-				this.obj.slIdsVals = [];
-				$.each($('#' + this.id + 'mng-act-wrap .slider'),lang.hitch(this,function(i,v){
-					var idArray = v.id.split('-');
-					var id = "-" + idArray[1];
-					var min = $('#' + v.id).slider("option", "min");
-					var max = $('#' + v.id).slider("option", "max");
-					var values = $('#' + v.id).slider("option", "values");
-					if (min != values[0] || max != values[1]){
-						this.obj.slIdsVals.push([ id, [values[0], values[1]] ])
-					}
-				}));	
-				// Git ids of checked checkboxes above sliders
-				this.obj.slCbIds = [];
-				$.each( $('#' + this.id + 'umr-wrap .-slCb'),lang.hitch(this,function(i,v){
-					if (v.checked == true){
-						var id = "-" + v.id.split('-').pop();
-						this.obj.slCbIds.push(id)
-					}
-					Array.from(new Set(this.obj.slCbIds));
-				}))
-				// Get ids of checked radio buttons
-				this.obj.rbIds = [];
-				$.each( $('#' + this.id + ' .umr-radio-indent input'),lang.hitch(this,function(i,v){
-					if (v.checked == true){
-						var id = "-" + v.id.split('-').pop();
-						this.obj.rbIds.push(id)
-					}
-				}));	
-				// Get ids of checked checkboxes above radio buttons
-				this.obj.rbCbIds = [];
-				$.each( $('#' + this.id + 'umr-wrap .rb_cb'),lang.hitch(this,function(i,v){
-					if (v.checked == true){
-						var id = v.id.split('0').pop();
-						this.obj.rbCbIds.push(id)
-					}
-				}));	
 				//extent
 				this.obj.extent = this.map.geographicExtent;
 				this.obj.stateSet = "yes";	
@@ -107,8 +70,6 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 		},	
 		// Called by activate and builds the plugins elements and functions
 		render: function() {
-			//this.oid = -1;
-			//$('.basemap-selector').trigger('change', 3);
 			this.mapScale  = this.map.getScale();
 			// BRING IN OTHER JS FILES
 			this.variables = new variables();
@@ -116,7 +77,7 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 			this.clicks = new clicks();
 			// ADD HTML TO APP
 			// Define Content Pane as HTML parent		
-			this.appDiv = new ContentPane({style:'padding:0; color:#000;}'});
+			this.appDiv = new ContentPane({style:'padding:0; height: calc(100vh - 55px);}'});
 			this.id = this.appDiv.id
 			dom.byId(this.container).appendChild(this.appDiv.domNode);			
 			// Get html from content.html, prepend appDiv.id to html element id's, and add to appDiv
@@ -124,11 +85,11 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 			var idUpdate = idUpdate0.replace(/id="/g, 'id="' + this.id);
 			$('#' + this.id).html(idUpdate);
 			// Add popup window for descriptions
-			this.descDiv = new ContentPane({style:'display:none; padding:10px 10px 5px 10px; color:#000; opacity: 1; z-index:1000; border:1pt solid #777; position:absolute; top:5px; left:6px; max-width:500px; border-radius:5px; box-shadow:2px 2px 2px 1px rgba(16,22,26,.5); background:#f9f9f9;'});
-			this.descID = this.descDiv.id;
-			var dId = this.descID;
-			dom.byId('map-0').appendChild(this.descDiv.domNode);
-			$('#' + this.descID).html(popup);
+			// this.descDiv = new ContentPane({style:'display:none; padding:10px 10px 5px 10px; color:#000; opacity: 1; z-index:1000; border:1pt solid #777; position:absolute; top:5px; left:6px; max-width:500px; border-radius:5px; box-shadow:2px 2px 2px 1px rgba(16,22,26,.5); background:#f9f9f9;'});
+			// this.descID = this.descDiv.id;
+			// var dId = this.descID;
+			// dom.byId('map-0').appendChild(this.descDiv.domNode);
+			// $('#' + this.descID).html(popup);
 			// add a basemap selector to map
 			$("#map-0").append(`
 				<div class="dropdown" style="position:absolute; top:20px; right:20px; z-index:1000;">
@@ -158,6 +119,26 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 					}
 				})
 			})
+			// tiny box community listed popup
+			$(this.container).find('.comNotListed').on('click', function(c) {
+                TINY.box.show({
+                    animate: false,
+                    url: 'plugins/community-rating-system/html/comNotListed.html',
+                    fixed: true,
+                    width: 430,
+                    height: 160
+                });
+            }).tooltip();
+            // tiny box info popup
+			$(this.container).find('.infoIcon').on('click', function(c) {
+                TINY.box.show({
+                    animate: false,
+                    url: 'plugins/community-rating-system/html/info.html',
+                    fixed: true,
+                    width: 530,
+                    height: 460
+                });
+            }).tooltip();
 			// override hamburger basemap even handler to add imagery with labels
 			let tm = this.map
 			$(".pushy-link a").on('click',function(c){
@@ -172,10 +153,6 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 			this.variables.makeVariables(this);
 			// Build elements
 			this.clicks.buildElements(this);
-			// Click listeners
-			this.clicks.eventListeners(this);
-			// Call custom app modificaiton function
-			this.variables.modifications(this);
 			// Create ESRI objects and event listeners	
 			this.esriapi.esriApiFunctions(this);
 			this.rendered = true;	

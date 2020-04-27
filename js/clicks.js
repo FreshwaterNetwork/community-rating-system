@@ -6,500 +6,332 @@ function ( declare, Query, QueryTask ) {
 
         return declare(null, {
         	buildElements: function(t){
-        		// create intro paragraph and toggle button controls from object
-        		$(`#${t.id}introP`).html(t.topObj["introP"]);
-        		let tbnum = 0;
-        		$.each(t.topObj["toggleBtns"],function(k,v){
-        			tbnum = tbnum + 1;
-        			$(`#${t.id}top-controls`).append(`
-        				<h4>${v.header}</h4>
-        				<div id="${t.id}tb-${tbnum}" class="toggle-btn"></div>
-        			`);
-        			$.each(v.btns,function(k1,v1){
-        				$(`#${t.id}tb-${tbnum}`).append(`
-        					<input type="radio" id="${t.id}${v1.id}" name="${v.name}" value="${v1.value}"/>
-							<label for="${t.id}${v1.id}">${v1.label}</label>
-						`);	
-        			})
-        		})
-
-        		// create filter controls from object
-        		let num = 0;
-        		let num1 = 0;
-        		$.each(t.filterObj,function(i,v){
-        			num = num + 1;
-        			$(`#${t.id}mng-act-wrap`).append(`
-        				<h4><span class="fa fa-chevron-down chev-oc chev-o"></span><span class="fa fa-chevron-right chev-oc chev-c"></span>${v.header}</h4>
-        				<div class="oc-wrap" id="${t.id}oc-wrap${num}"></div>
-        			`);
-        			$.each(v.controls,function(i1,v1){
-        				num1 = num1 + 1;
-        				if (v1.type == "slider"){
-        					$(`#${t.id}oc-wrap${num}`).append(`
-        						<div class="cntrlWrap" id="wrap-${v1.field}">
-									<div class="flexSlideWrap">
-										<div class="flex1">
-											<label class="form-component" for="${t.id}-slCb${num1}">
-												<input type="checkbox" class="-slCb" id="${t.id}-slCb${num1}" name="-slCb${num1}"><span class="check"></span>
-												<span class="form-text under">${v1.label}</span>
-											</label>
-										</div>
-										<div class="flex1a">
-											<span class="umr-slider-label label-off"><span class="rnum label-off">x</span> to <span class="rnum label-off">y</span> ${v1.unit}</span>
-											<div class="slider-container range-slider" style="width:170px;">
-												<div id="${t.id}-${v1.field}" class="slider"></div>
-											</div>
-										</div>
-										<div class="feInfoWrap"><i class="fa fa-info-circle feInfo feInfoOpen"></i></div>
-										<div class="feInfoTextWrap"><span class="feInfoText"></span><i class="fa fa-close feInfo feInfoClose"></i></div>						
-									</div>	
-								</div>
-        					`);
-        				}
-        				if (v1.type == "radio"){
-        					$(`#${t.id}oc-wrap${num}`).append(`
-        						<div class="cntrlWrap" id="${t.id}wrap-${v1.field}">
-									<div class="mng-act-toggle flexSlideWrap">
-										<div class="flex1">
-											<label class="form-component" for="${t.id}rb_cb${num1}">
-												<input type="checkbox" class="rb_cb" id="${t.id}rb_cb${num1}" name="rb_cb${num1}"><span class="check"></span>
-												<span class="form-text under">${v1.label}</span>
-											</label>
-										</div>	
-										<div class="umr-radio-indent flex1">
-											<label class="form-component" for="${t.id}-rb${num1}a">
-												<input checked type="radio" id="${t.id}-rb${num1}a" name="${v1.field}" value="1" disabled>
-												<span class="check"></span><span class="form-text">Present</span>
-											</label>
-											<label class="form-component" for="${t.id}-rb${num1}b">
-												<input type="radio" id="${t.id}-rb${num1}b" name="${v1.field}" value="0" disabled>
-												<span class="check"></span><span class="form-text">Absent</span>
-											</label>
-										</div>	
-										<div class="feInfoWrap"><i class="fa fa-info-circle feInfo feInfoOpen"></i></div>
-										<div class="feInfoTextWrap"><span class="feInfoText"></span><i class="fa fa-close feInfo feInfoClose"></i></div>
-									</div>
-								</div>
-        					`);	
-        				}
-        			})
-        		})
-
-        		// create supporting layer controls from object
-        		if ( t.supportingLayersObj.visible ){
-	        		t.supLayersAdded = true;
-	        		let slnum = 0;
-	        		$.each(t.supportingLayersObj.controls,function(k,v){
-	 					slnum = slnum + 1;
-	 					$(`#${t.id}supporting-layers`).append(`
-	 						<div class="flex1">
-								<label class="form-component" for="${t.id}sl${slnum}">
-									<input type="checkbox" class="slcb" id="${t.id}sl${slnum}" name="sl${slnum}" value="${v.value}"><span class="check"></span>
-									<span class="form-text under">${v.label}</span>
-								</label>
-							</div>
-	 					`);			
-	        		})	
-	        		$(`#${t.id}supporting-layers`).show();
-	        	}else{
-	        		t.supLayersAdded = false;
-	        		$(`#${t.id}supporting-layers`).hide();
-	        	}	
-        	},
-			eventListeners: function(t){
-				var clickCnt = 0;
-				// Flood frequency, HUC, and Management Action clicks
-				$('#' + t.id + 'top-controls input').on('click',function(c){
-					t.esriapi.clearGraphics(t);
-					// Find checked inputs and record values
-					$('#' + t.id + 'top-controls input').each(function(i,v){
-						if (v.checked){
-							var rname = $(v).attr("name")
-							t.obj[rname] = v.value;
-							if (rname == "huc"){
-								t.ws = $(v).prop("id").split("-").pop()
-							}
-						}
-					})
-					t.fe = t.ws + t.obj.mngmtAction + t.obj.floodFreq;
-					t.maFf = t.obj.mngmtAction + t.obj.floodFreq;
-					// check if second modification function exists
-					if (typeof t.variables.eventMods === 'function'){
-						t.variables.eventMods(t)
-					}
-					t.obj.hucLayer = t.obj.huc
-					// Update range slider min and max values 
-					var slen = $('#' + t.id + 'mng-act-wrap .slider').length;
-					t.ord = ""
-					$("h4").show();
-					$.each($('#' + t.id + 'mng-act-wrap .slider'),function(i,v){
-						if (slen == i + 1){
-							t.ord = "last";
-						}
-						var ben  = v.id.split("-").pop();
-						var okeys = Object.keys(t.sliderObj[t.fe]);
-						$.each(okeys,function(i1,v1){
-							if (ben == v1){
-								if (t.sliderObj[t.fe][v1].vis){
-									$("#" + v.id).parent().parent().parent().parent().show();
-									var min = t.sliderObj[t.fe][v1].min;
-									var max = t.sliderObj[t.fe][v1].max;
-									$("#" + v.id).slider( "option", "min", min );
-									$("#" + v.id).slider( "option", "max", max );
-									if (t.sliderObj[t.fe][v1].step){
-										var step = t.sliderObj[t.fe][v1].step;
-										$("#" + v.id).slider( "option", "step", step );
-									}
-									var options = $("#" + v.id).slider( 'option' );
-									var val1 = options.min;
-									var val2 = options.max;
-									if (t.sliderObj[t.fe][v1].values.length > 0){
-										val1 = t.sliderObj[t.fe][v1].values[0];
-										val2 = t.sliderObj[t.fe][v1].values[1];
-									}
-									$("#" + v.id).slider( 'option', 'values', [ val1, val2 ] );
-								}else{
-									$("#" + v.id).parent().parent().parent().parent().hide();
-									var options = $("#" + v.id).slider( 'option' );
-									$("#" + v.id).slider( 'option', 'values', [ options.min, options.max ] );
-									// hide the header above if the filter group is not visible and has no siblings
-									$.each(t.filterObj,function(k,v3){
-										$.each(v3.controls,function(k1,v4){
-											if (v4.field == v1 && v4.single){
-												$(`h4:contains('${v3.header}')`).hide();
-												return false;
-											}
-										})
+				// create state chosen menu
+				$(`#${t.id}crs_state_chosen`).chosen({allow_single_deselect:false, width:"90%"})
+					.change(function(c){
+						t.st = c.target.value;
+						// send selected state to google analytics
+						ga('send', {
+  							hitType: 'event',
+  							eventCategory: 'Community Rating System',
+  							eventAction: 'State selected',
+  							eventLabel: t.st
+						});
+						$.each(t.stateFeatures,function(i,v){
+							if (v.attributes.STATE == t.st){
+								// query community layer
+								let queryTask = new esri.tasks.QueryTask(t.url + "/1"); 
+								let query = new esri.tasks.Query(); 
+								query.outFields = ["*"]; 
+								let exp = "STATE = '" + t.st + "'"
+								query.where = exp;  
+								query.returnGeometry = false;
+								queryTask.execute(query, function (fset) {  
+									t.communityFeatures = fset.features;
+									// populate community dropdown
+									$(`#${t.id}crs_community_chosen`).empty();
+									$(`#${t.id}crs_community_chosen`).append(`<option></option>`);
+									$.each(t.communityFeatures,function(i,v){
+										$(`#${t.id}crs_community_chosen`).append(`
+											<option value="${v.attributes.CIS_CID}">${v.attributes.CRS_NAME}</option>
+										`)
 									})
-								}	
+									$(`#${t.id}choose-com-header`).removeClass("choose-com-disabled");
+									$(`#${t.id}crs_community_chosen`).prop("disabled", false).trigger("chosen:updated");
+								})			
+								// layer visiblity and definition expression
+								t.obj.visibleLayers = [1];
+								t.dynamicLayer.setVisibleLayers(t.obj.visibleLayers);
+								t.definitionExpression = exp;
+								t.layerDefinitions = [];
+								t.layerDefinitions[1] = t.definitionExpression;
+								t.dynamicLayer.setLayerDefinitions(t.layerDefinitions);
+								t.map.setExtent( v.geometry.getExtent().expand(1.3) )  
 							}
 						})
-					})	
-					// Set definition expressions for visible and enabled radion buttons
-					$.each( $('.umr-radio-indent input'), function(i,v){
-						var ben = v.name
-						var val = v.name.value;
-						var dis = v.disabled;
-						if (t.radioObj[t.fe][ben].vis === true){
-							$(v).parent().parent().parent().parent().show()
-						}else{
-							$(v).parent().parent().parent().parent().hide()
-							$(v).prop("disabled", true)
-							if ( $("#" + t.id + t.radioObj[t.fe][ben].cbid ).prop("checked") ){
-								$("#" + t.id + t.radioObj[t.fe][ben].cbid ).trigger("click")
+					});
+				// create community chosen menu
+				$(`#${t.id}crs_community_chosen`).chosen({allow_single_deselect:false, width:"90%"})
+					.change(function(c){
+						t.sliderType = "programmatic";
+						let cid = c.target.value;
+						t.communityName = $(c).find('option:selected').html();
+						// send selected community to google analytics
+						ga('send', {
+  							hitType: 'event',
+  							eventCategory: 'Community Rating System',
+  							eventAction: 'Community selected',
+  							eventLabel: t.communityName
+						});
+						// query for selected community
+						let queryTask = new esri.tasks.QueryTask(t.url + "/1"); 
+						let query = new esri.tasks.Query(); 
+						query.returnGeometry = true; 
+						query.outFields = ["*"]; 
+						let exp = "CIS_CID = " + cid
+						query.where = exp;  
+						queryTask.execute(query, function (fset) {
+							// zoom to community extent
+							t.map.setExtent(esri.graphicsExtent(fset.features).expand(1.5)); 
+							// get community attributes
+							t.communityAtts = fset.features[0].attributes;
+							// get reference layer numbers and create checkboxes
+							t.refLayers = t.communityAtts.REF_INDEX.split(",");
+							t.clicks.createRefCBs(t);
+							// hide intro - show data page
+							$(".crs-intro").hide();
+							$(".crs-wrap").show();
+							// populate stats on data page
+							$(".communityStats").each(function(i,v){
+								let field = v.id.split("-").pop();
+								$(v).html(t.communityAtts[field])
+							})
+							// update future slider range
+							let fmin = Math.round(t.communityAtts["MIN_fcOSP"]) - 1;
+							if (fmin < 0){
+								fmin = 0;
 							}
-						}
-					});	
-					// Update info text
-					$.each($(".cntrlWrap"),function(i,v){	
-						var obkey = v.id.split("-").pop()
-						if (t.sliderObj[t.fe][obkey]){
-							if (t.sliderObj[t.fe][obkey].info){
-								if ( $(v).find(".feInfoTextWrap").is(":visible") ){
-									$(v).find(".feInfoWrap").hide();
-								}else{
-									$(v).find(".feInfoWrap").show()
+							let fmax = t.communityAtts["MAX_fcOSP"] ;
+							$(`#${t.id}future-slider`).slider( "option", "min", fmin );
+							$(`#${t.id}future-slider`).slider( "option", "max", fmax );
+							$(`#${t.id}future-slider`).slider( 'option', 'values', [ fmin, fmax ] );
+							$(`#${t.id}fsl-min`).html( fmin )
+							$(`#${t.id}fsl-max`).html( fmax )
+							// show/update tax value slider
+							t.includeTaxValue = "no";
+							if (t.communityAtts.MIN_TAX_VALUE > 0){
+								t.includeTaxValue = "yes";
+								$(`#${t.id}taxval-wrap`).show();
+								let tmin = t.communityAtts["MIN_TAX_VALUE"];
+								let tmax = t.communityAtts["MAX_TAX_VALUE"];
+								$(`#${t.id}taxval-slider`).slider( "option", "min", tmin );
+								$(`#${t.id}taxval-slider`).slider( "option", "max", tmax );
+								$(`#${t.id}taxval-slider`).slider( 'option', 'values', [ tmin, tmax ] );
+								let tminl = t.clicks.abbreviateNumber(tmin);
+								if (!isNaN(tminl) ){
+									tminl = t.clicks.commaSeparateNumber(tminl)
 								}
-								$(v).find(".feInfoText").html(t.sliderObj[t.fe][obkey].info)
-							}else{
-								$(v).find(".feInfoWrap").hide()
+								$(`#${t.id}tsl-min`).html( "$" + tminl )
+								let tmaxl = t.clicks.abbreviateNumber(tmax);
+								if (!isNaN(tmaxl) ){
+									tmaxl = t.clicks.commaSeparateNumber(tmaxl)
+								}
+								$(`#${t.id}tsl-max`).html( "$" + tmaxl )
 							}
-						}	
-						if (t.radioObj[t.fe][obkey]){
-							if (t.radioObj[t.fe][obkey].info){
-								$(v).find(".feInfoWrap").show()
-								$(v).find(".feInfoText").html(t.radioObj[t.fe][obkey].info)
-							}else{
-								$(v).find(".feInfoWrap").hide()
-							}	
-						}
-					});
-					// Update watershed visibilty
-					for (var i = 0; i < 3; i++){
-						let index = t.obj.visibleLayers.indexOf(i.toString());
-						if (index > -1){
-							t.obj.visibleLayers.splice(index,1);
-						}
+						})  
+						// query future osp eligible by CRS Name
+						let queryTask1 = new esri.tasks.QueryTask(t.url + "/2")
+						let query1 = new esri.tasks.Query();
+						query1.returnGeometry = false;
+						query1.outFields = ["*"];
+						query1.where = exp;
+						queryTask1.execute(query1, function(fset){
+							let futureAtts = {fcOSP: 0, faOSP: 0};
+							$.each(fset.features, function(i,v){
+								futureAtts.fcOSP = futureAtts.fcOSP + v.attributes.fcOSP;
+								futureAtts.faOSP = futureAtts.faOSP + v.attributes.faOSP;
+							})
+							// populate stats on data page
+							$(".futureStats").each(function(i,v){
+								let field = v.id.split("-").pop();
+								let val = Math.round(futureAtts[field])
+								let num = t.clicks.commaSeparateNumber(val)
+								$(v).html( num )
+							})
+						})
+						// layer visiblity and definition expression
+						t.obj.visibleLayers = [1,2,3];
+						t.dynamicLayer.setVisibleLayers(t.obj.visibleLayers);
+						t.deState = exp;
+						t.layerDefinitions = [];
+						t.layerDefinitions[1] = t.deState;
+						t.layerDefinitions[3] = t.deState;
+						t.dynamicLayer.setLayerDefinitions(t.layerDefinitions);
+					})
+				// future OSP slider
+				$(`#${t.id}future-slider`).slider({range:true, min:0, max:100, values:[25,75],
+					// called at end of slide
+					change:function(event,ui){
+						t.clicks.sliderLayerDefs(t);			
+					},
+					// called at each increment of slide
+					slide:function(event,ui){
+						t.sliderType = "user";
+						$(`#${t.id}fsl-min`).html(ui.values[0])
+						$(`#${t.id}fsl-max`).html(ui.values[1])
 					}
-					t.obj.visibleLayers.push(t.obj.hucLayer)
+				})	
+				// tax value slider
+				$(`#${t.id}taxval-slider`).slider({range:true, min:0, max:100, values:[25,75],
+					// called at end of slide
+					change:function(event,ui){
+						t.clicks.sliderLayerDefs(t);			
+					},
+					// called at each increment of slide
+					slide:function(event,ui){
+						t.sliderType = "user";
+						let minval = t.clicks.abbreviateNumber(ui.values[0]);
+						if ( !isNaN(minval) ){
+							minval = t.clicks.commaSeparateNumber(minval)
+						}
+						$(`#${t.id}tsl-min`).html("$" + minval);
+						let maxval = t.clicks.abbreviateNumber(ui.values[1]);
+						if ( !isNaN(maxval) ){
+							maxval = t.clicks.commaSeparateNumber(maxval)
+						}
+						$(`#${t.id}tsl-max`).html("$" + maxval);
+					}
+				})
+				// export parcel table 
+				$(`#${t.id}exportTable`).click(function(){
+					// send community parcel table downloaded to google analytics
+					ga('send', {
+						hitType: 'event',
+						eventCategory: 'Community Rating System',
+						eventAction: 'Export parcel table button clicked',
+						eventLabel: t.items.length + ' parcels attributes downloaded for ' +t.communityName
+					});
+					t.items.unshift(t.headers)
+					var jsonObject = JSON.stringify(t.items);
+					var csv = t.clicks.convertToCSV(jsonObject);
+					var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+					var url = URL.createObjectURL(blob);
+					var link = document.createElement("a");
+					link.setAttribute("href", url);
+					let dlName = t.communityName + ".csv"
+		            link.setAttribute("download", dlName);
+		            link.style.visibility = 'hidden';
+		            document.body.appendChild(link);
+		            link.click();
+		            document.body.removeChild(link);
+				})
+				// back arrow click
+				$(`#${t.id}backArrow`).click(function(c){
+					//t.map.setExtent(esri.graphicsExtent(t.stateFeatures).expand(1.5)); 
+					t.obj.visibleLayers = [0];
 					t.dynamicLayer.setVisibleLayers(t.obj.visibleLayers);
-				})
-				// Checkboxes for sliders
-				$('#' + t.id + 'umr-wrap .-slCb').on('click',function(c){
-					if (c.target.checked == true){
-						$('#' + c.target.id).parent().parent().parent().find('.umr-slider-label').removeClass("label-off");
-						$('#' + c.target.id).parent().parent().parent().find('.rnum').removeClass("label-off");
-						var sl = $('#' + c.target.id).parent().parent().parent().find('.slider')[0].id 
-						$('#' + sl).slider( "option", "disabled", false );
-						var values = $('#' + sl).slider("option", "values");
-						$('#' + sl).slider('values', values);
-					}
-					if (c.target.checked == false){
-						$('#' + c.target.id).parent().parent().parent().find('.umr-slider-label').addClass("label-off");
-						$('#' + c.target.id).parent().parent().parent().find('.rnum').addClass("label-off");
-						var sl = $('#' + c.target.id).parent().parent().parent().find('.slider')[0].id 
-						$('#' + sl).slider( "option", "disabled", true );
-						var ben  = sl.split("-").pop();
-						t.exp[ben] = "";
-						t.clicks.layerDefs(t);
-					}	
-					t.clicks.cbChecker(t);	
-				})
-				// Checkboxes for radio buttons
-				$('#' + t.id + 'umr-wrap .rb_cb').on('click',function(c){
-					if (c.target.checked == true){
-						$.each($('#' + c.target.id).parent().parent().next().find('input'),function(i,v){
-							$(v).attr('disabled', false)
-							if (v.checked == true){
-								$(v).trigger('click')
-							}
-						})
-					}
-					if (c.target.checked == false){
-						var ben = $('#' + c.target.id).parent().parent().next().find('input')[0].name;
-						t.exp[ben] = "";
-						t.clicks.layerDefs(t);
-						$.each($('#' + c.target.id).parent().parent().next().find('input'),function(i,v){
-							$(v).attr('disabled', true)		
-						})
-					}
-					t.clicks.cbChecker(t);	
-				});	
-				// Radio button clicks
-				$('.umr-radio-indent input').on('click',function(c){
-					var ben = c.target.name;
-					var field = c.target.name + "_" + t.obj.mngmtAction + t.obj.floodFreq;
-					if (t.radioObj[t.fe][ben].shfld){
-						field = ben;
-					}
-					var val = c.target.value;
-					t.exp[ben] = "( " + field + " = " + val + " )";
-					if (val == 1 && ben == "TNC"){
-						t.exp[ben] = "( " + field + " > 0 )";
-					}
-					t.clicks.layerDefs(t);
-				})
-				// Info icon clicks
-				$('#' + t.id + "mng-act-wrap .feInfo").click(function(c) {
-					var e = c.currentTarget;
-					$(".feInfoTextWrap").hide();
-					$(".feInfoWrap").show();
-					if ( $(e).hasClass('feInfoOpen') ){
-						$(e).parent().parent().find(".feInfoTextWrap").show();
-					}
-					if ( $(e).hasClass('feInfoClose') ){
-						$(e).parent().parent().find(".feInfoWrap").show();
-					}
-					$(e).parent().hide();
-				});
-				// Checkboxes for supporting layers
-				$('#' + t.id + 'umr-wrap .slcb').on('click',function(c){
-					if ( c.currentTarget.checked ){
-						t.obj.supportingLayers.push(c.currentTarget.value);
-						t.supportingLayer.setVisibleLayers(t.obj.supportingLayers);
-					}else{
-						let index= t.obj.supportingLayers.indexOf(c.currentTarget.value);
-						if (index > -1){
-							t.obj.supportingLayers.splice(index,1)
-						}
-						t.supportingLayer.setVisibleLayers(t.obj.supportingLayers);
-					}
-				})
-				// Set up range slider
-				$('#' + t.id + 'mng-act-wrap .slider').slider({range:true, min:0, max:2400, values:[0,2400], disabled:true, 
-					change:function(event,ui){t.clicks.sliderChange(event,ui,t)},
-					slide:function(event,ui){t.clicks.sliderSlide(event,ui,t)}
-				})
-				// filter section chevron clicks
-				$('#' + t.id + 'mng-act-wrap .chev-oc').click(function(c){
-					if ( $(c.currentTarget).hasClass('chev-o') ){
-						$(c.currentTarget).parent().find('.chev-o').hide();
-						$(c.currentTarget).parent().find('.chev-c').css("display","inline-block");
-						$(c.currentTarget).parent().next().slideUp();
-					} 
-					if ( $(c.currentTarget).hasClass('chev-c') ){
-						$(c.currentTarget).parent().find('.chev-c').hide();
-						$(c.currentTarget).parent().find('.chev-o').css("display","inline-block");
-						$(c.currentTarget).parent().next().slideDown();
-					}
-				})
-				// reset filters click
-				$(`#${t.id}resetFilters`).click(function(c){
-					// reset all slider values in t.sliderObj to empty arrays
-					$.each(t.sliderObj,function(i,v){
-						$.each(v,function(i1,v1){
-							if (v1.values){
-								v1.values = [];
-							}
-						})
-					})
-					// reclick first checked item in top menu - this resets the slider values
-					$.each($('#' + t.id + 'top-controls input'),function(i,v){
-						if (v.checked){
-							$('#' + v.id).trigger("click");
-							return false;
-						}
-					})
-					// uncheck slider checkboxes
-					$('#' + t.id + 'umr-wrap .-slCb').each(function(i,v){
-						if (v.checked){
-							$(v).trigger('click');
-						}
-					})
-					// set radio buttons to first input
-					$('.umr-radio-indent').each(function(i,v){
-						var ipt = $(v).find("input")[0];
-						$(ipt).prop("checked",true);
-					})
-					// uncheck radio checkboxes
-					$(`#${t.id}umr-wrap .rb_cb`).each(function(i,v){
-						if (v.checked){
-							$(v).trigger('click');
-						}
-					})
-				})
-				// save and share button
-				$(`#${t.id}saveAndShare`).click(function(c){
-					$(`#map-utils-control a`).each(function(i,v){
-						if ($(v).html() == "Save &amp; Share"){
-							v.click();
-						}
-					});
+					$(`#${t.id}crs_state_chosen`).val(t.st).trigger("change").trigger("chosen:updated");
+					//$(`#${t.id}crs_community_chosen`).val("").trigger("chosen:updated");
+					$(".crs-wrap").hide();
+					$(".crs-intro").show();
 				})	
-			},
-			cbChecker: function(t){
-				let n = 0;
-				$('#' + t.id + 'umr-wrap .rb_cb').each(function(i,v){
-					if (v.checked){
-						n = n + 1;
-					}
-				})
-				$(`#${t.id}umr-wrap .-slCb`).each(function(i,v){
-					if (v.checked){
-						n = n + 1;
-					}
-				})
-				if (n == 0){
-					$(`#${t.id}saveAndShare`).hide();
-					$(`#${t.id}resetFilters`).hide();
+        	},
+			sliderLayerDefs: function(t){
+				// get future OSP values and create expression
+				let fmax = $(`#${t.id}future-slider`).slider( "option", "max");
+				let fvals = $(`#${t.id}future-slider`).slider( 'option', 'values');
+				let fexp = "";
+				if (fmax == fvals[1]){
+					fexp = " AND fcOSP >= " + fvals[0];
 				}else{
-					$(`#${t.id}saveAndShare`).show();
-					$(`#${t.id}resetFilters`).show();
+					fexp = " AND fcOSP >= " + fvals[0] + " AND fcOSP <= " + fvals[1];
 				}
-			},
-			sliderChange: function(e, ui, t){
-				var ben  = e.target.id.split("-").pop()
-				var us = "_";
-				if (t.sliderObj[t.fe][ben].nounsc){
-					us = "";
-				}	
-				var field = ben + us + t.obj.mngmtAction + t.obj.floodFreq;
-				if (t.sliderObj[t.fe][ben].endwp){
-					field = field + "P" 
-				}
-				if (t.sliderObj[t.fe][ben].shfld){
-					field = ben;
-				}	
-				// slider change was mouse-driven
-				if (e.originalEvent) {
-					var v0 = ui.values[0]
-					var v1 = ui.values[1]
-					t.sliderObj[t.fe][ben].values = [v0,v1];
-					if (t.sliderObj[t.fe][ben].div){
-						v0 = v0/t.sliderObj[t.fe][ben].div
-						v1 = v1/t.sliderObj[t.fe][ben].div
-					}
-					if (v1 == t.sliderObj[t.fe][ben].max && t.sliderObj[t.fe][ben].gtmax){
-						t.exp[ben] = "(" + field + " >= " + v0 + ")";	
+				// tax value values and create expression
+				let texp = "";
+				if (t.includeTaxValue == "yes"){
+					let tmax = $(`#${t.id}taxval-slider`).slider( "option", "max");
+					let tvals = $(`#${t.id}taxval-slider`).slider( 'option', 'values');
+					if (tmax == tvals[1]){
+						texp = " AND TAX_VALUE >= " + tvals[0];
 					}else{
-						t.exp[ben] = "(" + field + " >= " + v0 + " AND " + field + " <= " + v1 + ")";	
+						texp = " AND TAX_VALUE >= " + tvals[0] + " AND TAX_VALUE <= " + tvals[1];
 					}
-					t.clicks.layerDefs(t);
 				}
-				//slider change was programmatic
-				else{					
-					var dis = $('#' + e.target.id).slider("option", "disabled");
-					var vis = $('#' + e.target.id).is(":visible")
-					if (dis === true){
-						t.exp[ben] = "";	
-					}else{
-						if (vis){
-							var v0 = ui.values[0]
-							var v1 = ui.values[1]
-							t.sliderObj[t.fe][ben].values = [v0,v1];
-							if (t.sliderObj[t.fe][ben].div){
-								v0 = v0/t.sliderObj[t.fe][ben].div
-								v1 = v1/t.sliderObj[t.fe][ben].div
-							}
-							if (v1 == t.sliderObj[t.fe][ben].max && t.sliderObj[t.fe][ben].gtmax){
-								t.exp[ben] = "(" + field + " >= " + v0 + ")";	
-							}else{
-								t.exp[ben] = "(" + field + " >= " + v0 + " AND " + field + " <= " + v1 + ")";	
-							}
+				// combine expressions for layer definition
+				t.sliderExpression = t.deState + fexp + texp;
+				t.layerDefinitions[2] = t.sliderExpression;
+				t.dynamicLayer.setLayerDefinitions(t.layerDefinitions);
+				// query for selected community
+				let queryTask = new esri.tasks.QueryTask(t.url + "/2"); 
+				let query = new esri.tasks.Query(); 
+				query.returnGeometry = false; 
+				query.outFields = ["CRS_NAME","STATE","OWNER_NAME","OWNER_TYPE","LAND_USE","fcOSP","faOSP","TAX_VALUE"]; 
+				query.where = t.sliderExpression;  
+				queryTask.execute(query, function (fset) {
+					t.items = [];
+					let f = 0;
+					let a = 0;
+					$.each(fset.features,function(i,v){
+						t.items.push(v.attributes)
+						f = f + v.attributes.fcOSP;
+						a = a + v.attributes.faOSP;
+					})
+					$(`#${t.id}legend-current`).html(Math.round(t.communityAtts.cTOTAL))
+					$(`#${t.id}legend-future`).html(Math.round(f));
+					$(`#${t.id}-fcOSP`).html(Math.round(f));
+					$(`#${t.id}-faOSP`).html( t.clicks.commaSeparateNumber(Math.round(a)) );
+					let fc = f/2870*100;
+					fc = fc.toString() + "%";
+					let bc = t.communityAtts.cTOTAL/2870*100; 
+					bc = bc.toString() + "%";
+					// set up graph
+					let w = [bc,fc];
+					//let w = ["48.8%","24.4%"]
+					$(".block").each(function(i,v){
+						// animate current and future slider when landing on page
+						// only update future when user moves slider - prevents the bar from jumping
+						if (t.sliderType == "programmatic"){
+							$(this).animate({
+								width: w[i] 
+							}, "fast", function() {})
 						}else{
-							t.exp[ben] = "";
+							if (i == 1){
+								$(this).animate({
+									width: w[i] 
+								}, "fast", function() {})
+							}
+						}
+					})
+				})		
+			},
+			convertToCSV: function(objArray){
+				var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+			    var str = '';
+			    for (var i = 0; i < array.length; i++) {
+			        var line = '';
+			        for (var index in array[i]) {
+			            if (line != '') line += ','
+			            line += array[i][index];
+			        }
+			        str += line + '\r\n';
+			    }
+			    return str;
+			},
+			createRefCBs: function(t){
+				// clear checkbox wrap div and append reference layer checkboxes
+				$(`#${t.id}ref-cb-wrap`).empty();
+				$.each(t.refLayers,function(i,v){
+					let lyrname = "";
+					$.each(t.layersArray,function(i1,v1){
+						if (v1.id == v){
+							lyrname = v1.name;
+							$(`#${t.id}ref-cb-wrap`).append(`
+								<label class="form-component" for="rl-${i}">
+									<input type="checkbox" id="rl-${i}" name="rl-${i}" value="${v}">
+									<div class="check"></div>
+									<span class="form-text">${lyrname}</span>
+								</label><br>
+							`)
+						}
+					})
+				})
+				// create event listener for checkboxes 
+				$(`#${t.id}ref-cb-wrap input`).click(function(c){
+					let val = parseInt(c.currentTarget.value);
+					// checked box
+					if(c.currentTarget.checked){
+						t.obj.visibleLayers.push(val)
+						if (val == 4 || val == 6 || val == 7){
+							t.layerDefinitions[val] = t.deState;
 						}
 					}
-					t.clicks.sliderSlide(e, ui, t);
-					if (t.ord == "last"){
-						t.clicks.layerDefs(t);
+					// unchecked box
+					else{	
+						t.obj.visibleLayers = t.obj.visibleLayers.filter(item => item !== val)
 					}
-				}	
-			},
-			sliderSlide: function(e, ui, t){
-				var ben = e.target.id.split("-").pop();
-				$('#' + e.target.id).parent().prev().find('.rnum').each(function(i,v){
-					var sval = ui.values[i]
-					if (t.sliderObj[t.fe][ben].div){
-						sval = ui.values[i]/t.sliderObj[t.fe][ben].div
-					}
-					if (ui.values[i] > 100000){
-						var val = t.clicks.abbreviateNumber(sval)
-					}else{
-						var val = t.clicks.commaSeparateNumber(sval)
-					}	
-					if (ui.values[i] == t.sliderObj[t.fe][ben].max && t.sliderObj[t.fe][ben].gtmax){
-						$(v).html("<b>></b> " + val)
-					}else{
-						$(v).html(val)
-					}
-				})	
-			},
-			layerDefs: function(t){
-				if (t.obj.stateSet == "no"){
-					t.obj.exp = t.exp
-				}
-				var exp = "OBJECTID > 0";
-				var cnt = 0;
-				$.each(t.obj.exp, function(i, v){
-					if (v.length > 0){
-						cnt = cnt + 1;
-					}	
-				});	
-				if (cnt > 0){
-					exp = "";
-					//t.obj.exp.unshift(t.obj.ffDef);
-					$.each(t.obj.exp, function(i, v){
-						if (v.length > 0){
-							if (exp.length == 0){
-								exp = v;
-							}else{
-								exp = exp + " AND " + v;
-							}	
-						}	
-					});
-				}	
-				t.definitionExpression = exp;
-				t.layerDefinitions = [];		
-				t.layerDefinitions[t.obj.hucLayer] = exp;			
-				t.dynamicLayer.setLayerDefinitions(t.layerDefinitions);
-				var query = new Query();
-				var queryTask = new QueryTask(t.url + '/' + t.obj.hucLayer);
-				query.where = exp;
-				queryTask.executeForCount(query,function(count){
-					var countWcomma = t.clicks.commaSeparateNumber(count)
-					$('#' + t.id + 'mng-act-wrap .fuCount').html(countWcomma); 
-				});	
+					t.dynamicLayer.setVisibleLayers(t.obj.visibleLayers)
+				})
+				$(`#${t.id}ref-cb-wrap input[value="4"]`).trigger("click");
 			},
 			commaSeparateNumber: function(val){
 				while (/(\d+)(\d{3})/.test(val.toString())){
@@ -508,15 +340,15 @@ function ( declare, Query, QueryTask ) {
 				return val;
 			},
 			abbreviateNumber: function(num) {
-			    if (num >= 1000000000) {
+			    	if (num >= 1000000000) {
 			        return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + 'B';
 			     }
 			     if (num >= 1000000) {
 			        return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
 			     }
-			     if (num >= 1000) {
-			        return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-			     }
+			     // if (num >= 10000) {
+			     //    return (num / 10000).toFixed(1).replace(/\.0$/, '') + 'K';
+			     // }
 			     return num;
 			},
 			abbreviateNumberPopup: function(num) {

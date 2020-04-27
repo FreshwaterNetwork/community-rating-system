@@ -1,5 +1,6 @@
 {
-	"visibleLayers": [],
+	"visibleLayers": [0],
+	"layerDefinitions": [],
 	"supportingLayers":[],
 	"hucLayer": "0",
 	"mngmtAction": "p",
