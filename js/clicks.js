@@ -55,7 +55,7 @@ function ( declare, Query, QueryTask ) {
 					.change(function(c){
 						t.sliderType = "programmatic";
 						let cid = c.target.value;
-						t.communityName = $(c).find('option:selected').html();
+						t.communityName = $(`#${t.id}crs_community_chosen option:selected`).html();
 						// send selected community to google analytics
 						ga('send', {
   							hitType: 'event',
@@ -184,13 +184,6 @@ function ( declare, Query, QueryTask ) {
 				})
 				// export parcel table 
 				$(`#${t.id}exportTable`).click(function(){
-					// send community parcel table downloaded to google analytics
-					ga('send', {
-						hitType: 'event',
-						eventCategory: 'Community Rating System',
-						eventAction: 'Export parcel table button clicked',
-						eventLabel: t.items.length + ' parcels attributes downloaded for ' +t.communityName
-					});
 					t.items.unshift(t.headers)
 					var jsonObject = JSON.stringify(t.items);
 					var csv = t.clicks.convertToCSV(jsonObject);
