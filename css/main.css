@@ -76,11 +76,21 @@
 .crs-wrap{
 	position: relative;
 }
+.trans-wrap{
+	display:flex;
+	margin: 8px 20px;
+}
+.trans-wrap .slider-container{
+	margin:4px 10px;
+}
+.trans-label{
+	font-size:12px;
+}
 .icons{
 	position: absolute;
 	top: 0px;
-	font-size: 22px;
-    color: #457545;
+	font-size: 25px;
+    color: #0096D6;
 }
 .backArrow{
 	left: 7px;
@@ -90,19 +100,19 @@
 }
 .icons:hover{
 	cursor: pointer;
-	color: #589558;
+	color: #0072a3;
 }
 .icons:active{
-	color:#457545;
+	color: #0096D6;
 }
 .crs-wrap .range-slider .ui-widget-header{
-	background:#83b683;
+	background: #e6f0e6;
 }
 .crs-wrap .ui-widget.ui-widget-content {
     border: 1px solid #949494;
 }
 .crs-wrap .slider-container .ui-state-default, .crs-wrap .slider-container .ui-widget-content .ui-state-default, .crs-wrap .slider-container .ui-widget-header .ui-state-default {
-    background: linear-gradient(180deg,hsla(0,0%,100%,.1),hsla(0,0%,100%,0)) 0 no-repeat,50% no-repeat #457545!important;
+    background: linear-gradient(180deg,hsla(0,0%,100%,.1),hsla(0,0%,100%,0)) 0 no-repeat,50% no-repeat #008476 !important;
 }
 .exportTable-wrap{
 	text-align: center;
@@ -120,7 +130,7 @@
 .chart {
 	overflow: hidden;
 	width: 280px;
-	border: 1pt solid #457545;
+	border: 1pt solid #294529;
 }
 .block {
 	display: block;
@@ -128,14 +138,14 @@
 	color: #fff;
 	font-size: .75em;
 	float: left;
-	background-color: #93bf93;
+	background-color: #A8D900;
 	position: relative;
 	overflow: hidden;
 	opacity: 1;
 }
 .block:nth-of-type(2),
 .legend li:nth-of-type(2):before {
-	background-color: #457545;
+	background-color: #008476;
 }
 .block:nth-of-type(3),
 .legend li:nth-of-type(3):before {
@@ -199,15 +209,15 @@
 .bar-legend div:nth-of-type(1){
 	width: 13px;
 	height: 13px;
-	background: #93bf93;
-	border: 1pt solid #999;
+	background: #A8D900;
+	border: 1pt solid #294529;
 	margin-right:3px;
 }
 .bar-legend div:nth-of-type(3){
 	width: 13px;
 	height: 13px;
-	background: #457545;
-	border: 1pt solid #999;
+	background: #008476;
+	border: 1pt solid #294529;
 	margin-right:3px;
 	margin-left:14px;
 }

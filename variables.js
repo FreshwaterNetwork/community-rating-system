@@ -8,6 +8,7 @@ function ( 	declare ) {
 				// map service URL
 				t.url = "https://cirrus.tnc.org/arcgis/rest/services/CommunityRatingSystem/CommunityRatingSystem/MapServer";
 				t.headers = {
+					OSP_ID: "OSP_ID",
 					CRS_NAME: "CRS Name",
 					STATE: "State Abr",
 					OWNER_NAME: "Owner Name",

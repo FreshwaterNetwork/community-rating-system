@@ -31,7 +31,7 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 		},
 		// Called after hibernate at app startup. Calls the render function which builds the plugins elements and functions.   
 		activate: function (showHelpOnStart) {
-			$(`#map-utils-control`).hide();
+			//$(`#map-utils-control`).hide();
 			// console.log(showHelpOnStart)
 			if (this.rendered == false) {
 				this.rendered = true;							
@@ -51,6 +51,10 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 		getState: function () {
 			// remove this conditional statement when minimize is added
 			if ( $('#' + this.id ).is(":visible") ){
+				// credits
+				this.obj.credits = $(`#${this.id}-fcOSP`).html();
+				//acres 
+				this.obj.acres = $(`#${this.id}-faOSP`).html();
 				//extent
 				this.obj.extent = this.map.geographicExtent;
 				this.obj.stateSet = "yes";	
@@ -90,6 +94,7 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 			// var dId = this.descID;
 			// dom.byId('map-0').appendChild(this.descDiv.domNode);
 			// $('#' + this.descID).html(popup);
+			
 			// add a basemap selector to map
 			$("#map-0").append(`
 				<div class="dropdown" style="position:absolute; top:20px; right:20px; z-index:1000;">
@@ -105,7 +110,7 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 			`)
 			// hide exiting hamburger basemap selector so it isn't accidentally used
 			$('.basemap-selector').hide();
-			$('#show-single-plugin-mode-help').hide();
+			//$('#show-single-plugin-mode-help').hide();
 			// click event on new basemap selector that triggers a click on hamburger basemap selector
 			$("#bmul").on("click",function(c){
 				let sel = c.target.innerHTML;
@@ -143,7 +148,7 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 			let tm = this.map
 			$(".pushy-link a").on('click',function(c){
 				if (c.currentTarget.innerHTML == "Imagery"){
-					tm.setBasemap("hybrid")
+					tm.setBasemap("imagery")
 				}
 				if (c.currentTarget.innerHTML == "Topographic"){
 					tm.setBasemap("topo")
