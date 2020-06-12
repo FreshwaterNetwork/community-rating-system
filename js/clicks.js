@@ -226,6 +226,7 @@ function ( declare, Query, QueryTask ) {
 					});
 					t.items.unshift(t.headers)
 					var jsonObject = JSON.stringify(t.items);
+					console.log(jsonObject)
 					var csv = t.clicks.convertToCSV(jsonObject);
 					var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
 					var url = URL.createObjectURL(blob);

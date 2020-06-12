@@ -37,6 +37,60 @@ function ( 	ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Query
 				t.supportingLayer = new ArcGISDynamicMapServiceLayer(t.url, {opacity:0.6});
 				t.map.addLayer(t.supportingLayer);	
 				t.supportingLayer.setVisibleLayers(t.obj.supportingLayers);
+				// Click on future parcels
+				t.sym1  = new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, new Color([204,0,0,1]), 2), new Color([88,116,215]);	
+				t.map.on("click",function(c){
+					//create identify tasks and setup parameters
+					let identifyTask = new IdentifyTask(t.url);
+					let identifyParams = new IdentifyParameters();
+					identifyParams.tolerance = 3;
+					identifyParams.returnGeometry = true;
+					identifyParams.layerIds = [2];
+					identifyParams.layerOption = IdentifyParameters.LAYER_OPTION_ALL;
+					identifyParams.width = t.map.width;
+					identifyParams.height = t.map.height;
+					identifyParams.geometry = c.mapPoint;
+         			identifyParams.mapExtent = t.map.extent;
+         			identifyTask
+            			.execute(identifyParams)
+            			.addCallback(function (response) {
+            				if (response[0]){
+            					t.map.graphics.clear();
+	            				t.atts = response[0].feature.attributes;
+	            				response[0].feature.setSymbol(t.sym1);
+	            				t.map.graphics.add(response[0].feature);
+	            				$.each($("#popupAttWrap input"),function(i,v){
+									var commaVal = t.atts[v.id];
+									if (!isNaN(commaVal)){
+										commaVal = t.clicks.abbreviateNumberPopup(t.atts[v.id])
+									}
+									if (!isNaN(commaVal)){
+										if ( $(`#${v.id}`).hasClass("round") ){
+											commaVal = t.clicks.commaSeparateNumber(Number(t.atts[v.id]).toFixed(0))
+										}else{
+											commaVal = t.clicks.commaSeparateNumber(Number(t.atts[v.id]).toFixed(1))
+										}
+									}
+									if (v.id == "TAX_VALUE"){
+										commaVal = "$"+commaVal;
+									}
+									$(v).val(commaVal)
+									let len = commaVal.length;
+									if (len < 12){
+            							len = 12;
+        							}
+        							let l = len + 1;
+									v.style.width = l + "ch"
+								})
+	            				$("#" + t.descID).show();
+            				}else{
+            					t.esriapi.clearGraphics(t);
+            				}
+            			})
+				})
+				$("#hideDesc").click(function(c){
+					t.esriapi.clearGraphics(t);
+				})	
 			},
 			clearGraphics: function(t){
 				$('#' + t.descID).hide();

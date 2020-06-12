@@ -75,6 +75,7 @@
 }
 .crs-wrap{
 	position: relative;
+	padding: 10px 20px 30px 10px;
 }
 .trans-wrap{
 	display:flex;

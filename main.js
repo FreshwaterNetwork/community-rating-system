@@ -11,7 +11,7 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 	return declare(PluginBase, {
 		// The height and width are set here when an infographic is defined. When the user click Continue it rebuilds the app window with whatever you put in.
 		toolbarName: "Coomunity Rating System Explorer", showServiceLayersInLegend: true, allowIdentifyWhenActive: false, rendered: false, resizable: false,
-		hasCustomPrint: false, size:'small', 
+		hasCustomPrint: false, size:'custom', width:'370', 
 		
 		// First function called when the user clicks the pluging icon. 
 		initialize: function (frameworkParameters) {
@@ -88,12 +88,12 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 			var idUpdate0 = content.replace(/for="/g, 'for="' + this.id);	
 			var idUpdate = idUpdate0.replace(/id="/g, 'id="' + this.id);
 			$('#' + this.id).html(idUpdate);
-			// Add popup window for descriptions
-			// this.descDiv = new ContentPane({style:'display:none; padding:10px 10px 5px 10px; color:#000; opacity: 1; z-index:1000; border:1pt solid #777; position:absolute; top:5px; left:6px; max-width:500px; border-radius:5px; box-shadow:2px 2px 2px 1px rgba(16,22,26,.5); background:#f9f9f9;'});
-			// this.descID = this.descDiv.id;
-			// var dId = this.descID;
-			// dom.byId('map-0').appendChild(this.descDiv.domNode);
-			// $('#' + this.descID).html(popup);
+			//Add popup window for descriptions
+			this.descDiv = new ContentPane({style:'display:none; padding:10px 10px 5px 10px; color:#000; opacity: 1; z-index:1000; border:1pt solid #777; position:absolute; top:5px; left:6px; max-width:500px; border-radius:5px; box-shadow:2px 2px 2px 1px rgba(16,22,26,.5); background:#f9f9f9;'});
+			this.descID = this.descDiv.id;
+			var dId = this.descID;
+			dom.byId('map-0').appendChild(this.descDiv.domNode);
+			$('#' + this.descID).html(popup);
 			
 			// add a basemap selector to map
 			$("#map-0").append(`
