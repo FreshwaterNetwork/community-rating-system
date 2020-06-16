@@ -61,14 +61,16 @@ function ( 	ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, Query
 	            				t.map.graphics.add(response[0].feature);
 	            				$.each($("#popupAttWrap input"),function(i,v){
 									var commaVal = t.atts[v.id];
-									if (!isNaN(commaVal)){
-										commaVal = t.clicks.abbreviateNumberPopup(t.atts[v.id])
-									}
-									if (!isNaN(commaVal)){
-										if ( $(`#${v.id}`).hasClass("round") ){
-											commaVal = t.clicks.commaSeparateNumber(Number(t.atts[v.id]).toFixed(0))
-										}else{
-											commaVal = t.clicks.commaSeparateNumber(Number(t.atts[v.id]).toFixed(1))
+									if (v.id != "OSP_ID"){
+										if (!isNaN(commaVal)){
+											commaVal = t.clicks.abbreviateNumberPopup(t.atts[v.id])
+										}
+										if (!isNaN(commaVal)){
+											if ( $(`#${v.id}`).hasClass("round") ){
+												commaVal = t.clicks.commaSeparateNumber(Number(t.atts[v.id]).toFixed(0))
+											}else{
+												commaVal = t.clicks.commaSeparateNumber(Number(t.atts[v.id]).toFixed(1))
+											}
 										}
 									}
 									if (v.id == "TAX_VALUE"){
