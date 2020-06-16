@@ -156,16 +156,6 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
                     height: 460
                 });
             }).tooltip();
-			// override hamburger basemap even handler to add imagery with labels
-			let tm = this.map
-			$(".pushy-link a").on('click',function(c){
-				if (c.currentTarget.innerHTML == "Imagery"){
-					tm.setBasemap("imagery")
-				}
-				if (c.currentTarget.innerHTML == "Topographic"){
-					tm.setBasemap("topo")
-				}
-			})
 			// Set up variables
 			this.variables.makeVariables(this);
 			// Build elements

@@ -1,15 +1,20 @@
 define([
 	"esri/layers/ArcGISDynamicMapServiceLayer", "esri/geometry/Extent", "esri/SpatialReference", "esri/tasks/query" ,"esri/tasks/QueryTask", "dojo/_base/declare", "esri/layers/FeatureLayer", 
 	"esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleFillSymbol","esri/symbols/SimpleMarkerSymbol", "esri/graphic", "dojo/_base/Color", "esri/tasks/IdentifyTask", 
-	"esri/tasks/IdentifyParameters","esri/dijit/Popup","dojo/dom-construct", "dojo/_base/array"
+	"esri/tasks/IdentifyParameters","esri/dijit/Popup","dojo/dom-construct", "dojo/_base/array", "esri/dijit/BasemapToggle"
 ],
 function ( 	ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryTask, declare, FeatureLayer, 
 			SimpleLineSymbol, SimpleFillSymbol, SimpleMarkerSymbol, Graphic, Color, IdentifyTask, IdentifyParameters, 
-			Popup, domConstruct, arrayUtils ) {
+			Popup, domConstruct, arrayUtils, BasemapToggle ) {
         "use strict";
 
         return declare(null, {
 			esriApiFunctions: function(t){	
+				var toggle = new BasemapToggle({
+			    	map: t.map,
+			    	basemap: "satellite"
+			    }, "BasemapToggle");
+			    toggle.startup();
 				// Add dynamic map service
 				t.dynamicLayer = new ArcGISDynamicMapServiceLayer(t.url, {opacity:0.75});
 				t.map.addLayer(t.dynamicLayer);	
