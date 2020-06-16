@@ -5,16 +5,11 @@ define([
 ],
 function ( 	ArcGISDynamicMapServiceLayer, Extent, SpatialReference, Query, QueryTask, declare, FeatureLayer, 
 			SimpleLineSymbol, SimpleFillSymbol, SimpleMarkerSymbol, Graphic, Color, IdentifyTask, IdentifyParameters, 
-			Popup, domConstruct, arrayUtils, BasemapToggle ) {
+			Popup, domConstruct, arrayUtils ) {
         "use strict";
 
         return declare(null, {
 			esriApiFunctions: function(t){	
-				var toggle = new BasemapToggle({
-			    	map: t.map,
-			    	basemap: "satellite"
-			    }, "BasemapToggle");
-			    toggle.startup();
 				// Add dynamic map service
 				t.dynamicLayer = new ArcGISDynamicMapServiceLayer(t.url, {opacity:0.75});
 				t.map.addLayer(t.dynamicLayer);	
