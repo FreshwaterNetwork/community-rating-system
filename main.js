@@ -55,6 +55,15 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 				this.obj.credits = $(`#${this.id}-fcOSP`).html();
 				//acres 
 				this.obj.acres = $(`#${this.id}-faOSP`).html();
+				// legend current and future
+				this.obj.legendCurrent = $(`#${this.id}legend-current`).html();
+				this.obj.legendFuture = $(`#${this.id}legend-future`).html();
+				// min-man point sider
+				this.obj.pointMin = $(`#${this.id}fsl-min`).html();
+				this.obj.pointMax = $(`#${this.id}fsl-max`).html();
+				// min-max tax slider
+				this.obj.taxMin = $(`${this.id}tsl-min`).html();
+				this.obj.taxMax = $(`${this.id}tsl-max`).html();
 				//extent
 				this.obj.extent = this.map.geographicExtent;
 				this.obj.stateSet = "yes";	
@@ -83,7 +92,10 @@ function ( 	declare, PluginBase, ContentPane, dom, domStyle, domGeom, obj, conte
 			// Define Content Pane as HTML parent		
 			this.appDiv = new ContentPane({style:'padding:0; height: calc(100vh - 55px);}'});
 			this.id = this.appDiv.id
-			dom.byId(this.container).appendChild(this.appDiv.domNode);			
+			dom.byId(this.container).appendChild(this.appDiv.domNode);		
+			// add logo
+			let header = document.getElementsByTagName("HEADER")[0];
+			header.insertAdjacentHTML("beforeend",`<a target="_blank" href="https://www.nature.org/en-us/about-us/where-we-work/priority-landscapes/gulf-of-mexico/stories-in-the-gulf-of-mexico/community-rating-system-flood-risk/" style="position:absolute; left:50%; margin-left:-65px; margin-top:4px;"><img src="plugins/community-rating-system/images/logo.png" width="130"></a>`)	
 			// Get html from content.html, prepend appDiv.id to html element id's, and add to appDiv
 			var idUpdate0 = content.replace(/for="/g, 'for="' + this.id);	
 			var idUpdate = idUpdate0.replace(/id="/g, 'id="' + this.id);

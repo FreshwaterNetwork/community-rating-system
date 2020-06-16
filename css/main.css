@@ -41,13 +41,24 @@
 }
 .comNotListed{
 	position: absolute; 
-	bottom: 0px; 
+	bottom: 30px; 
 	left: 10px; 
 	cursor: pointer; 
 	color: blue; 
 	font-size: 15px; 
 	width: 226px; 
 	margin: 0 50px;
+}
+.legalwrap{
+   	width: 370px;
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    margin-left: -128px;
+    color: #457545;
+}
+.legalwrap a{
+	color: #457545;
 }
 .slider-wrap{
 	display: inline-flex;
@@ -221,4 +232,16 @@
 	border: 1pt solid #294529;
 	margin-right:3px;
 	margin-left:14px;
+}
+#search{
+	right: 8px !important;
+}
+.offcanvas-icon-container {
+    padding: 3px 3px 0 2px !important;
+}
+.header-offcanvas .icon-menu {
+    font-size: 23px;
+}
+.header-offcanvas.single-plugin-mode {
+	display: none;
 }

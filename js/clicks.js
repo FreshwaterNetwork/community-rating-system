@@ -167,9 +167,15 @@ function ( declare, Query, QueryTask ) {
 									$(v).html( num )
 								})
 								// save and share
-								$(`#${t.id}-fcOSP`).html( t.obj.credits )
-								$(`#${t.id}-faOSP`).html( t.obj.acres )
-								t.obj.stateSet = "no";
+								setTimeout(function(){  
+									$(`#${t.id}-fcOSP`).html( t.obj.credits );
+									$(`#${t.id}-faOSP`).html( t.obj.acres );
+									$(`#${t.id}legend-current`).html(t.obj.legendCurrent);
+									$(`#${t.id}legend-future`).html(t.obj.legendFuture);
+									$(`#${t.id}fsl-min`).html(t.obj.pointMin);
+									$(`#${t.id}fsl-max`).html(t.obj.pointMax);
+									t.obj.stateSet = "no";
+								}, 1000);
 							})
 						})  
 						// layer visiblity and definition expression
@@ -225,8 +231,16 @@ function ( declare, Query, QueryTask ) {
 						eventLabel: t.items.length + ' parcels attributes: ' + t.obj.communityName
 					});
 					t.items.unshift(t.headers)
+					// remove comments from strings 
+					$.each(t.items,function(i,v){
+						Object.entries(v).forEach(([key,value]) => {
+							if (typeof value == "string"){
+								let str = value.replace(",", " -")
+								v[key] = str;
+							}
+						})	
+					})
 					var jsonObject = JSON.stringify(t.items);
-					console.log(jsonObject)
 					var csv = t.clicks.convertToCSV(jsonObject);
 					var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
 					var url = URL.createObjectURL(blob);
@@ -250,6 +264,7 @@ function ( declare, Query, QueryTask ) {
 					//$(`#${t.id}crs_community_chosen`).val("").trigger("chosen:updated");
 					$(".crs-wrap").hide();
 					$(".crs-intro").show();
+					t.esriapi.clearGraphics(t);
 				})	
         	},
 			sliderLayerDefs: function(t){
@@ -303,7 +318,6 @@ function ( declare, Query, QueryTask ) {
 					bc = bc.toString() + "%";
 					// set up graph
 					let w = [bc,fc];
-					//let w = ["48.8%","24.4%"]
 					$(".block").each(function(i,v){
 						// animate current and future slider when landing on page
 						// only update future when user moves slider - prevents the bar from jumping
