@@ -235,7 +235,7 @@ function ( declare, Query, QueryTask ) {
 					$.each(t.items,function(i,v){
 						Object.entries(v).forEach(([key,value]) => {
 							if (typeof value == "string"){
-								let str = value.replace(",", " -")
+								let str = value.replace(/,/g, " -")
 								v[key] = str;
 							}
 						})	
