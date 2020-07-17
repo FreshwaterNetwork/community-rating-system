@@ -182,12 +182,14 @@ function ( declare, Query, QueryTask ) {
 							console.log(e)
 						})  
 						// layer visiblity and definition expression
-						t.obj.visibleLayers = [1,2,3];
+						t.obj.visibleLayers = [1,2,3,4];
 						t.dynamicLayer.setVisibleLayers(t.obj.visibleLayers);
 						t.deState = exp;
+						console.log(t.deState)
 						t.layerDefinitions = [];
 						t.layerDefinitions[1] = t.deState;
 						t.layerDefinitions[3] = t.deState;
+						t.layerDefinitions[4] = t.deState;
 						t.dynamicLayer.setLayerDefinitions(t.layerDefinitions);
 					})
 				// future OSP slider
@@ -375,6 +377,7 @@ function ( declare, Query, QueryTask ) {
 					if(c.currentTarget.checked){
 						t.obj.supportingLayers.push(val)
 						if (val == 4 || val == 6 || val == 7){
+							console.log(t.deState)
 							t.layerDefinitions[val] = t.deState;
 						}
 					}
