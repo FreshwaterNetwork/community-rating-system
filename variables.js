@@ -16,7 +16,8 @@ function ( 	declare ) {
 					LAND_USE: "Land Use",
 					fcOSP: "Future OSP Credits",
 					faOSP: "Future OSP Acres",
-					TAX_VALUE: "Tax Value"
+					TAX_VALUE: "Tax Value",
+					ADDRESS: "Address"
 				}
 			}
 		});

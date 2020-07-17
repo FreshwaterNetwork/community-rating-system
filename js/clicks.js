@@ -72,7 +72,7 @@ function ( declare, Query, QueryTask ) {
 						let query = new esri.tasks.Query(); 
 						query.returnGeometry = true; 
 						query.outFields = ["*"]; 
-						let exp = "CIS_CID = " + t.obj.cid
+						let exp = "CIS_CID = '" + t.obj.cid + "'";
 						query.where = exp;  
 						queryTask.execute(query, function (fset) {
 							// zoom to community extent
@@ -177,6 +177,9 @@ function ( declare, Query, QueryTask ) {
 									t.obj.stateSet = "no";
 								}, 1000);
 							})
+						},
+						function error(e){
+							console.log(e)
 						})  
 						// layer visiblity and definition expression
 						t.obj.visibleLayers = [1,2,3];
@@ -234,9 +237,8 @@ function ( declare, Query, QueryTask ) {
 					// remove comments from strings 
 					$.each(t.items,function(i,v){
 						Object.entries(v).forEach(([key,value]) => {
-							if (typeof value == "string"){
-								let str = value.replace(/,/g, " -")
-								v[key] = str;
+							if (i > 0){
+								v[key] = `"${value}"`;
 							}
 						})	
 					})
@@ -296,7 +298,7 @@ function ( declare, Query, QueryTask ) {
 				let queryTask = new esri.tasks.QueryTask(t.url + "/2"); 
 				let query = new esri.tasks.Query(); 
 				query.returnGeometry = false; 
-				query.outFields = ["OSP_ID","CRS_NAME","STATE","OWNER_NAME","OWNER_TYPE","LAND_USE","fcOSP","faOSP","TAX_VALUE"]; 
+				query.outFields = ["OSP_ID","CRS_NAME","STATE","OWNER_NAME","OWNER_TYPE","LAND_USE","fcOSP","faOSP","TAX_VALUE","ADDRESS"]; 
 				query.where = t.sliderExpression;  
 				queryTask.execute(query, function (fset) {
 					t.cnt = t.cnt + 1;
